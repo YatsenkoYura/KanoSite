@@ -1,0 +1,14 @@
+pandas
+langchain-classic
+langchain-openai
+langchain-core
+langchain-experimental
+chromadb
+sentence-transformers
+matplotlib
+numpy
+flask
+flask-cors
+markdown
+python-dotenv
+
