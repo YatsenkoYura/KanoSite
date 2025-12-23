@@ -1,7 +1,4 @@
 services:
-  # -------------------------
-  # POSTGRES DB
-  # -------------------------
   db:
     image: postgres:16
     container_name: site-db
@@ -17,10 +14,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  # -------------------------
-  # MIGRATOR (SQLite -> PG)
-  # -------------------------
   migrator:
     image: dimitri/pgloader:latest
     container_name: site-migrator
@@ -32,10 +25,6 @@ services:
     command: pgloader --with "batch rows = 500" --with "prefetch rows = 500" --with "workers = 2" /data/source.db postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
     restart: "no"
     profiles: ["migrate"]
-
-  # -------------------------
-  # PYTHON APP (Flask)
-  # -------------------------
   app:
     build: .
     container_name: site-app
@@ -44,16 +33,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    # ✅ УБРАЛ Зависимость от migrator!
     env_file:
       - .env
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     restart: unless-stopped
-
-  # -------------------------
-  # METABASE
-  # -------------------------
   metabase:
     image: metabase/metabase:latest
     container_name: site-metabase
@@ -72,10 +56,6 @@ services:
       MB_DB_USER: ${POSTGRES_USER}
       MB_DB_PASS: ${POSTGRES_PASSWORD}
       MB_DB_HOST: db
-
-  # -------------------------
-  # METABASE INIT
-  # -------------------------
   metabase-init:
     image: curlimages/curl
     container_name: site-metabase-init
