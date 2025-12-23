@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Медицинский инсайт | AI-агент для анализа данных</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='flav.ico') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+
+<!-- ОВЕРЛЕЙ ДЛЯ ЗАТЕМНЕНИЯ ФОНА -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- КНОПКА ГАМБУРГЕРА (прячется при открытии сайдбара) -->
+<button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- САЙДБАР -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo" id="logoBtn">
+            <i class="fas fa-brain"></i>
+            <h1>Медицинский инсайт</h1>
+        </div>
+        <!-- Кнопка закрытия в сайдбаре (прозрачная, всегда видна когда сайдбар открыт) -->
+        <button class="mobile-close-btn" id="mobileCloseToggle">
+            <i class="fas fa-times"></i>
+        </button>
+        <!-- Кнопка сворачивания для десктопа -->
+        <button class="toggle-btn">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+
+    <button class="new-chat-btn" id="newChatBtn">
+        <i class="fas fa-plus"></i>
+        <span class="menu-text">Новый чат</span>
+    </button>
+
+    <div class="chat-history" id="chatHistory">
+        <!-- История чатов будет здесь -->
+    </div>
+
+    <button class="sidebar-settings-btn" id="settingsBtn" title="Настройки">
+        <i class="fas fa-cog"></i>
+        <span class="menu-text">Настройки</span>
+    </button>
+</div>
+
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="main-content">
+    <div class="chat-header hidden">
+        <div class="chat-title-section">
+            <h2 id="currentChatTitle">Доктор НЯМ</h2>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <!-- Welcome screen показывается только когда нет активного чата -->
+        <div class="welcome-section" id="welcomeSection">
+            <h1>Медицинский AI-агент Санкт-Петербурга</h1>
+            <p>Анализ заболеваемости, выявление трендов, прогнозирование и рекомендации для системы здравоохранения</p>
+            <div class="start-btn-wrapper">
+                <button class="start-btn pulse">
+                    <i class="fas fa-comment"></i>
+                    <span>Начать новый чат</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Контейнер для сообщений чата -->
+        <div class="message-container" id="messageContainer">
+            <!-- Сообщения чата будут здесь -->
+        </div>
+    </div>
+
+    <div class="input-container" id="inputContainer" style="display: none;">
+        <form class="input-form" id="chatForm">
+            <div class="input-wrapper">
+                <textarea class="input-field" id="messageInput"
+                          placeholder="Введите запрос о медицинских данных Санкт-Петербурга..." rows="1"></textarea>
+                <button type="submit" class="send-btn" id="sendBtn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </form>
+        <div class="input-footer">
+            <span>Медицинский инсайт может допускать ошибки. Проверяйте важную информацию.</span>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2><i class="fas fa-cog"></i> Настройки</h2>
+            <button class="modal-close" id="closeSettingsModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Содержимое генерируется через JS -->
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

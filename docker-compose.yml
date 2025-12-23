@@ -1,0 +1,94 @@
+services:
+  # -------------------------
+  # POSTGRES DB
+  # -------------------------
+  db:
+    image: postgres:16
+    container_name: site-db
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------
+  # MIGRATOR (SQLite -> PG)
+  # -------------------------
+  migrator:
+    image: dimitri/pgloader:latest
+    container_name: site-migrator
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data/database_novec.db:/data/source.db
+    command: pgloader --with "batch rows = 500" --with "prefetch rows = 500" --with "workers = 2" /data/source.db postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
+    restart: "no"
+    profiles: ["migrate"]
+
+  # -------------------------
+  # PYTHON APP (Flask)
+  # -------------------------
+  app:
+    build: .
+    container_name: site-app
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    # ✅ УБРАЛ Зависимость от migrator!
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    restart: unless-stopped
+
+  # -------------------------
+  # METABASE
+  # -------------------------
+  metabase:
+    image: metabase/metabase:latest
+    container_name: site-metabase
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - metabase_data:/metabase-data
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${POSTGRES_DB}
+      MB_DB_PORT: 5432
+      MB_DB_USER: ${POSTGRES_USER}
+      MB_DB_PASS: ${POSTGRES_PASSWORD}
+      MB_DB_HOST: db
+
+  # -------------------------
+  # METABASE INIT
+  # -------------------------
+  metabase-init:
+    image: curlimages/curl
+    container_name: site-metabase-init
+    depends_on:
+      metabase:
+        condition: service_started
+    env_file:
+      - .env
+    volumes:
+      - ./init-metabase.sh:/init.sh
+    entrypoint: ["/bin/sh", "/init.sh"]
+    restart: "no"
+
+volumes:
+  postgres_data:
+  metabase_data:

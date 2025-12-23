@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Медицинский инсайт | AI-агент для анализа данных</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo" id="logoBtn">
+                <i class="fas fa-brain"></i>
+                <h1>Медицинский инсайт</h1>
+            </div>
+            <button class="toggle-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+
+        <button class="new-chat-btn" id="newChatBtn">
+            <i class="fas fa-plus"></i>
+            <span class="menu-text">Новый чат</span>
+        </button>
+
+        <div class="chat-history" id="chatHistory">
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="chat-header">
+            <div class="chat-title-section">
+                <h2 id="currentChatTitle">Медицинский инсайт</h2>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="welcome-section" id="welcomeSection">
+                <h1>Медицинский AI-агент Санкт-Петербурга</h1>
+                <p>Анализ заболеваемости, выявление трендов, прогнозирование и рекомендации для системы здравоохранения</p>
+
+                <div class="scenarios-grid">
+                    <div class="scenario-card" data-prompt="Проанализируй заболеваемость в Приморском районе. Выведи график.">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Анализ заболеваемости</h3>
+                        <p>Детальный анализ по районам и возрастным группам</p>
+                    </div>
+                    <div class="scenario-card" data-prompt="Покажи тренды по сердечно-сосудистым заболеваниям в 2021 году.">
+                        <i class="fas fa-trend-up"></i>
+                        <h3>Выявление трендов</h3>
+                        <p>Тенденции в динамике заболеваемости</p>
+                    </div>
+                    <div class="scenario-card" data-prompt="Сделай прогноз по заболеваемости гриппом на следующий год. Построй график.">
+                        <i class="fas fa-crystal-ball"></i>
+                        <h3>Прогнозирование</h3>
+                        <p>Прогноз эпидемиологической ситуации</p>
+                    </div>
+                    <div class="scenario-card" data-prompt="Дай рекомендации для поликлиник по профилактике болезней сердца.">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>Рекомендации</h3>
+                        <p>Оптимизация медицинских ресурсов</p>
+                    </div>
+                </div>
+
+                <div class="rules-container">
+    <h2>Как правильно формулировать запросы для AI-агента</h2>
+    <p class="intro-text">Для получения точных результатов важно четко формулировать задачу. Вот основные правила:</p>
+
+    <section class="rule-section">
+        <h3><i class="fas fa-chart-bar"></i> 1. Для построения графиков и визуализации данных</h3>
+        <p>Используйте точные команды. Укажите:</p>
+        <ul class="requirements-list">
+            <li><strong>Тип графика:</strong> линейный, столбчатый, круговой.</li>
+            <li><strong>Данные:</strong> что именно отобразить.</li>
+            <li><strong>Временной период:</strong> год, квартал, месяц.</li>
+            <li><strong>Параметры:</strong> район, возрастная группа, пол.</li>
+        </ul>
+
+        <div class="example-container">
+            <h4>Пример точной команды:</h4>
+            <blockquote class="example">
+                <p>"Построй линейный график заболеваемости сахарным диабетом 2 типа по кварталам за 2023 год для всех районов Санкт-Петербурга."</p>
+                <p>"Создай столбчатую диаграмму сравнения количества выписаных рецептов с пневмонией в первом квартале 2024 года по всем районам."</p>
+            </blockquote>
+        </div>
+    </section>
+
+    <section class="rule-section">
+        <h3><i class="fas fa-search"></i> 2. Для аналитики и получения выводов</h3>
+        <p>Сформулируйте подробный вопрос. Укажите:</p>
+        <ul class="requirements-list">
+            <li><strong>Цель:</strong> анализ, сравнение, выявление причин, прогноз.</li>
+            <li><strong>Заболевание:</strong> конкретное название (гипертоническая болезнь, COVID-19).</li>
+            <li><strong>Контекст:</strong> временные рамки, географическое ограничение, целевая группа.</li>
+            <li><strong>Глубина анализа:</strong> что именно вас интересует (тренды, корреляции, аномалии).</li>
+        </ul>
+
+        <div class="example-container">
+            <h4>Пример подробного промта для анализа:</h4>
+            <blockquote class="example">
+                <p>"Проанализируй динамику заболеваемости COVID-19 среди детей 3-7 лет в Калининском и Фрунзенском районах с сентября 2023 по март 2024. Выяви основные пики и возможные причины их возникновения. Сравни с аналогичным периодом прошлого года."</p>
+            </blockquote>
+        </div>
+    </section>
+
+    <div class="summary">
+        <p><strong>Общее правило:</strong> Чем конкретнее и детальнее ваш запрос, тем точнее и полезнее будет ответ или визуализация от AI-агента.</p>
+    </div>
+</div>
+            </div>
+
+            <div class="message-container" id="messageContainer" style="display: none;">
+            </div>
+        </div>
+
+        <div class="input-container">
+            <form class="input-form" id="chatForm">
+                <div class="input-wrapper">
+                    <textarea class="input-field" id="messageInput" placeholder="Введите запрос о медицинских данных Санкт-Петербурга..." rows="1"></textarea>
+                    <button type="submit" class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+            <div class="input-footer">
+                <span>Медицинский инсайт может допускать ошибки. Проверяйте важную информацию.</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
